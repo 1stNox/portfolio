@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Finn-Lasse Reichling — Software Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #04060f;
+  --text: #dde3f5;
+  --text-dim: #5a6180;
+  --font: 'Space Grotesk', sans-serif;
+  --mono: 'Space Mono', monospace;
+  --c-work:     oklch(0.76 0.18 290);
+  --c-edu:      oklch(0.70 0.15 290);
+  --c-personal: oklch(0.82 0.12 290);
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ── GALAXY ── */
+#galaxy {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── SCROLL CONTAINER ── */
+#scroller {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+}
+#scroller::-webkit-scrollbar { display: none; }
+
+/* ── CHAPTERS ── */
+.chapter {
+  height: 100vh;
+  width: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.4rem 3rem;
+  pointer-events: none;
+}
+
+.nav-logo {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--c-work);
+  letter-spacing: 0.05em;
+  pointer-events: all;
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.nav-domain {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  pointer-events: all;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-domain:hover { color: var(--text); }
+
+/* ── PROGRESS DOTS ── */
+#progress {
+  position: fixed;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.prog-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+}
+.prog-dot.active {
+  background: var(--dot-color, var(--c-work));
+  transform: scale(1.8);
+  box-shadow: 0 0 10px var(--dot-color, var(--c-work));
+}
+
+/* ── CHAPTER: HERO ── */
+.hero-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 1.4rem;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.4s forwards;
+}
+
+.hero-name {
+  font-size: clamp(2.4rem, 5.5vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 1.2rem;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.6s forwards;
+}
+
+.hero-name .grad {
+  background: linear-gradient(135deg, var(--c-work), var(--c-edu));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-tagline {
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  margin-bottom: 3.5rem;
+  font-weight: 400;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.8s forwards;
+}
+
+.hero-scroll-cue {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  opacity: 0;
+  animation: fadeIn 1s 1.6s forwards;
+}
+.hero-scroll-cue span {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.scroll-line {
+  width: 1px;
+  height: 48px;
+  background: linear-gradient(to bottom, var(--c-work), transparent);
+  animation: lineFlow 2.2s ease-in-out infinite;
+}
+
+/* ── CHAPTER: JOURNEY INTRO ── */
+.chapter-intro-content {
+  text-align: center;
+}
+.chapter-intro-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 1rem;
+}
+.chapter-intro-title {
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.chapter-intro-sub {
+  margin-top: 1.2rem;
+  font-size: 1rem;
+  color: var(--text-dim);
+  max-width: 400px;
+}
+
+/* ── CHAPTER: TIMELINE STEP ── */
+.step-bg-year {
+  position: absolute;
+  font-size: clamp(10rem, 22vw, 20rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.04);
+  pointer-events: none;
+  user-select: none;
+  right: -2vw;
+  bottom: -2rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.step-layout {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  gap: 0 4rem;
+  align-items: center;
+  width: 100%;
+  max-width: 1100px;
+  padding: 0 4rem;
+  transition: transform 0.65s cubic-bezier(0.22,1,0.36,1);
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  border-radius: 16px;
+  outline: 1px solid transparent;
+}
+
+.chapter.entered:not(.expanded) .step-layout:hover .step-role,
+.chapter.entered:not(.expanded) .step-layout:hover .step-years {
+  text-shadow: 0 0 20px color-mix(in oklch, var(--accent-color, var(--c-work)) 60%, transparent);
+  transition: text-shadow 0.3s;
+}
+
+.chapter.expanded .step-layout {
+  transform: translateX(-22%);
+}
+
+/* ── STEP DETAIL PANEL ── */
+.step-detail {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 36%;
+  padding: 5.5rem 2.5rem 3rem 3rem;
+  transform: translateX(100%);
+  transition: transform 0.65s cubic-bezier(0.22,1,0.36,1);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(180,140,255,0.2) transparent;
+  background: linear-gradient(to left, rgba(4,6,15,0.97) 55%, rgba(4,6,15,0.0));
+  z-index: 3;
+  border-left: 1px solid rgba(255,255,255,0.06);
+}
+
+.step-detail::-webkit-scrollbar { width: 3px; }
+.step-detail::-webkit-scrollbar-thumb { background: rgba(180,140,255,0.25); border-radius: 2px; }
+
+.chapter.expanded .step-detail {
+  transform: translateX(0);
+}
+
+.detail-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 28px;
+  height: 28px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 50%;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+}
+.detail-close:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+
+.detail-project {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.detail-project:last-child { border-bottom: none; margin-bottom: 0; }
+
+.detail-project-year {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  color: var(--accent-color, var(--c-work));
+  margin-bottom: 0.3rem;
+}
+
+.detail-project-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.55rem;
+  line-height: 1.3;
+}
+
+.detail-project-desc {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+
+.detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.6rem;
+}
+
+.detail-tag {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  background: color-mix(in oklch, var(--accent-color, var(--c-work)) 10%, transparent);
+  color: var(--accent-color, var(--c-work));
+  border: 1px solid color-mix(in oklch, var(--accent-color, var(--c-work)) 20%, transparent);
+  letter-spacing: 0.04em;
+}
+
+.detail-click-hint {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  opacity: 0;
+  transition: opacity 0.6s;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  white-space: nowrap;
+  background: rgba(4,6,15,0.6);
+  padding: 0.5rem 1.1rem;
+  border-radius: 99px;
+  border: 1px solid rgba(255,255,255,0.07);
+  backdrop-filter: blur(8px);
+}
+
+.detail-click-hint .hint-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-color, var(--c-work));
+  animation: none;
+  flex-shrink: 0;
+}
+
+.chapter.entered:not(.expanded) .detail-click-hint {
+  opacity: 1;
+}
+
+.chapter.entered:not(.expanded) .hint-dot {
+  animation: hintBlink 1.8s ease-in-out infinite;
+}
+
+@keyframes hintBlink {
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.7); box-shadow: 0 0 10px var(--accent-color, var(--c-work)); }
+}
+
+@media (max-width: 768px) {
+  .chapter.expanded .step-layout {
+    transform: translateY(-20%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.65s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease;
+  }
+  .step-layout {
+    transition: transform 0.65s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease;
+  }
+  .step-detail {
+    width: 100%;
+    top: auto;
+    bottom: 0;
+    height: 55%;
+    transform: translateY(100%);
+    padding: 2rem 1.5rem;
+    background: linear-gradient(to top, rgba(4,6,15,0.98) 70%, rgba(4,6,15,0.0));
+  }
+  .chapter.expanded .step-detail { transform: translateY(0); }
+}
+
+.step-left {
+  text-align: right;
+}
+
+.step-divider {
+  height: 220px;
+  background: linear-gradient(to bottom, transparent, var(--accent-color, var(--c-work)), transparent);
+  opacity: 0.4;
+}
+
+.step-right { }
+
+.step-chapter-num {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.5rem;
+}
+
+.step-years {
+  font-size: clamp(2.8rem, 5vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--accent-color, var(--c-work));
+  line-height: 1;
+  margin-bottom: 0.6rem;
+}
+
+.step-type-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-weight: 700;
+  background: color-mix(in oklch, var(--accent-color, var(--c-work)) 15%, transparent);
+  color: var(--accent-color, var(--c-work));
+  border: 1px solid color-mix(in oklch, var(--accent-color, var(--c-work)) 30%, transparent);
+}
+
+.step-role {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.4rem;
+  line-height: 1.15;
+}
+
+.step-org {
+  font-size: 1rem;
+  color: var(--accent-color, var(--c-work));
+  font-weight: 500;
+  margin-bottom: 1.25rem;
+}
+
+.step-desc {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  line-height: 1.75;
+  max-width: 380px;
+  text-wrap: pretty;
+}
+
+/* per-chapter accent variables */
+.chapter[data-type="work"]     { --accent-color: var(--c-work); --dot-color: var(--c-work); }
+.chapter[data-type="edu"]      { --accent-color: var(--c-edu);  --dot-color: var(--c-edu); }
+.chapter[data-type="personal"] { --accent-color: var(--c-personal); --dot-color: var(--c-personal); }
+.chapter[data-type="intro"]    { --dot-color: #ffffff22; }
+
+/* ── CHAPTER: SKILLS ── */
+.skills-content {
+  max-width: 900px;
+  width: 100%;
+  padding: 0 4rem;
+}
+
+.skills-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.75rem;
+}
+
+.skills-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 2.5rem;
+}
+
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.skill-chip {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.07);
+  color: var(--text-dim);
+  background: rgba(255,255,255,0.025);
+  transition: all 0.2s;
+  cursor: default;
+  letter-spacing: 0.04em;
+}
+
+.skill-chip:hover {
+  border-color: var(--c-work);
+  color: var(--text);
+  background: rgba(96,165,250,0.07);
+  transform: translateY(-2px);
+}
+
+.skill-chip.featured {
+  border-color: color-mix(in oklch, var(--c-work) 35%, transparent);
+  color: var(--c-work);
+  background: color-mix(in oklch, var(--c-work) 8%, transparent);
+}
+
+/* ── CHAPTER: CONTACT ── */
+.contact-content {
+  max-width: 700px;
+  width: 100%;
+  padding: 0 4rem;
+}
+
+.contact-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.75rem;
+}
+
+.contact-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+}
+
+.contact-sub {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  margin-bottom: 2.5rem;
+  max-width: 400px;
+  line-height: 1.7;
+}
+
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: rgba(255,255,255,0.02);
+  transition: all 0.25s;
+  max-width: 360px;
+}
+
+.contact-link:hover {
+  color: var(--text);
+  transform: translateX(6px);
+  background: rgba(255,255,255,0.05);
+}
+
+.contact-link.github:hover  { border-color: var(--c-work); color: var(--c-work); }
+.contact-link.linkedin:hover { border-color: #5aa3e8; color: #5aa3e8; }
+.contact-link.domain:hover  { border-color: var(--c-edu); color: var(--c-edu); }
+
+.contact-link-icon { width: 20px; height: 20px; flex-shrink: 0; opacity: 0.7; }
+.contact-link:hover .contact-link-icon { opacity: 1; }
+
+.contact-link-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.contact-link-meta strong { font-size: 0.92rem; font-weight: 600; color: var(--text); }
+.contact-link-meta span   { font-size: 0.78rem; font-family: var(--mono); letter-spacing: 0.04em; }
+
+/* ── ENTER ANIMATIONS ── */
+.chapter .animate {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
+}
+
+.chapter .animate.from-left  { transform: translateX(-40px); }
+.chapter .animate.from-right { transform: translateX(40px); }
+
+.chapter.entered .animate {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+.chapter.entered .animate:nth-child(1) { transition-delay: 0.05s; }
+.chapter.entered .animate:nth-child(2) { transition-delay: 0.15s; }
+.chapter.entered .animate:nth-child(3) { transition-delay: 0.25s; }
+.chapter.entered .animate:nth-child(4) { transition-delay: 0.35s; }
+.chapter.entered .animate:nth-child(5) { transition-delay: 0.45s; }
+.chapter.entered .animate:nth-child(6) { transition-delay: 0.55s; }
+
+/* left/right sub-animations */
+.step-left .animate:nth-child(1) { transition-delay: 0.05s; }
+.step-left .animate:nth-child(2) { transition-delay: 0.15s; }
+.step-left .animate:nth-child(3) { transition-delay: 0.25s; }
+.step-right .animate:nth-child(1) { transition-delay: 0.25s; }
+.step-right .animate:nth-child(2) { transition-delay: 0.35s; }
+.step-right .animate:nth-child(3) { transition-delay: 0.45s; }
+.step-right .animate:nth-child(4) { transition-delay: 0.55s; }
+
+.step-divider {
+  opacity: 0;
+  transition: opacity 0.8s 0.2s;
+}
+.chapter.entered .step-divider { opacity: 0.4; }
+
+/* step bg year */
+.step-bg-year {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 1s 0.1s, transform 1s 0.1s cubic-bezier(0.22,1,0.36,1);
+}
+.chapter.entered .step-bg-year {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── FOOTER ── */
+.chapter-footer-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  opacity: 0.5;
+  white-space: nowrap;
+}
+
+/* ── TWEAKS ── */
+#tweaks-panel {
+  display: none;
+  position: fixed;
+  bottom: 1.5rem;
+  right: 4rem;
+  z-index: 999;
+  background: rgba(4, 6, 15, 0.95);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 1.25rem;
+  width: 240px;
+  backdrop-filter: blur(20px);
+}
+
+#tweaks-panel h3 {
+  font-size: 0.75rem;
+  font-family: var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-work);
+  margin-bottom: 1rem;
+}
+
+.tweak-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+.tweak-row label { font-size: 0.75rem; color: var(--text-dim); }
+.tweak-row input[type=range] { width: 100%; accent-color: var(--c-work); }
+.tweak-row select {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text);
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  font-family: var(--font);
+  font-size: 0.78rem;
+  width: 100%;
+}
+
+/* ────────────────────────────────────────────
+   RESPONSIVE
+──────────────────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .chapter.expanded .step-layout { transform: translateX(-16%); }
+  .step-detail { width: 44%; padding: 5rem 1.5rem 2rem 2rem; }
+}
+
+@media (max-width: 768px) {
+  nav { padding: 1.1rem 1.5rem; }
+
+  #progress {
+    right: 0.75rem;
+    gap: 0.55rem;
+  }
+
+  .prog-dot { width: 5px; height: 5px; }
+
+  /* Hero */
+  .hero-name { font-size: clamp(2.2rem, 10vw, 3.5rem); }
+  .hero-tagline { font-size: 1rem; margin-bottom: 2.5rem; }
+
+  /* Journey intro */
+  .chapter-intro-title { font-size: clamp(2rem, 9vw, 3.5rem); }
+  .chapter-intro-sub { font-size: 0.9rem; padding: 0 1rem; }
+
+  /* Step chapters — stack vertically */
+  .step-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: 1.5rem 0;
+    padding: 0 1.75rem;
+    padding-top: 5rem;
+  }
+
+  .step-left { text-align: left; }
+  .step-divider { display: none; }
+
+  .step-years { font-size: clamp(2rem, 10vw, 3rem); }
+  .step-role  { font-size: clamp(1.3rem, 5.5vw, 1.8rem); }
+  .step-desc  { font-size: 0.88rem; max-width: 100%; }
+
+  .step-bg-year {
+    font-size: clamp(5rem, 30vw, 10rem);
+    right: 0;
+    bottom: 1rem;
+    -webkit-text-stroke-width: 1px;
+    opacity: 0.5 !important;
+  }
+
+  /* Expanded state on tablet: slide up from bottom */
+  .chapter.expanded .step-layout { transform: translateY(-18%); }
+  .step-detail {
+    width: 100%;
+    top: auto;
+    bottom: 0;
+    height: 52%;
+    transform: translateY(100%);
+    padding: 2rem 1.5rem 2rem 1.5rem;
+    background: linear-gradient(to top, rgba(4,6,15,0.98) 70%, rgba(4,6,15,0.0));
+    border-left: none;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .chapter.expanded .step-detail { transform: translateY(0); }
+
+  /* Skills */
+  .skills-content { padding: 0 1.75rem; padding-top: 5rem; }
+  .skills-title   { font-size: clamp(1.8rem, 7vw, 2.5rem); margin-bottom: 1.75rem; }
+  .skill-chip     { font-size: 0.72rem; padding: 0.4rem 0.85rem; }
+
+  /* Contact */
+  .contact-content { padding: 0 1.75rem; padding-top: 5rem; }
+  .contact-title   { font-size: clamp(1.8rem, 7vw, 2.5rem); }
+  .contact-link    { max-width: 100%; }
+
+  /* Hint */
+  .detail-click-hint { bottom: 1.5rem; font-size: 0.6rem; }
+}
+
+/* Small phones — 480px and below */
+@media (max-width: 480px) {
+  nav { padding: 1rem 1.25rem; }
+  .nav-logo { font-size: 0.78rem; }
+  .nav-domain { font-size: 0.68rem; }
+
+  #progress { display: none; }
+
+  .hero-name    { font-size: clamp(1.9rem, 11vw, 2.8rem); }
+  .hero-tagline { font-size: 0.9rem; }
+  .hero-eyebrow { font-size: 0.65rem; margin-bottom: 1rem; }
+
+  .step-layout  { padding: 0 1.25rem; padding-top: 5rem; }
+  .step-years   { font-size: clamp(1.7rem, 11vw, 2.5rem); }
+  .step-role    { font-size: clamp(1.15rem, 6vw, 1.6rem); }
+  .step-desc    { font-size: 0.84rem; line-height: 1.65; }
+
+  .step-detail  { height: 58%; padding: 1.75rem 1.25rem; }
+
+  .skills-content  { padding: 0 1.25rem; padding-top: 5rem; }
+  .contact-content { padding: 0 1.25rem; padding-top: 5rem; }
+  .contact-link { padding: 0.85rem 1.1rem; }
+
+  .detail-click-hint { font-size: 0.58rem; bottom: 1rem; }
+}
+
+/* Large desktops — 1600px and above */
+@media (min-width: 1600px) {
+  .step-layout    { max-width: 1300px; padding: 0 6rem; }
+  .skills-content { max-width: 1100px; padding: 0 6rem; }
+  .contact-content{ max-width: 900px;  padding: 0 6rem; }
+  .step-desc      { max-width: 480px; font-size: 1.05rem; }
+  .step-detail    { width: 32%; padding: 6rem 3rem 3rem 3.5rem; }
+  .chapter.expanded .step-layout { transform: translateX(-20%); }
+}
+
+/* ── KEYFRAMES ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes lineFlow {
+  0%,100% { opacity: 0.3; transform: scaleY(0.85); }
+  50%      { opacity: 1;   transform: scaleY(1.1); }
+}
+</style>
+</head>
+<body>
+
+<canvas id="galaxy"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#" onclick="scrollTo(0)">flr_</a>
+  <a class="nav-domain" href="https://reichling.dev" target="_blank">reichling.dev</a>
+</nav>
+
+<!-- PROGRESS DOTS -->
+<div id="progress"></div>
+
+<!-- SCROLL CONTAINER -->
+<div id="scroller">
+
+  <!-- 0: HERO -->
+  <div class="chapter" data-index="0" data-type="hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow">Software Engineer · Germany</p>
+      <h1 class="hero-name">
+        <span class="grad">Finn-Lasse<br/>Reichling</span>
+      </h1>
+      <p class="hero-tagline">Solving issues is my passion</p>
+      <div class="hero-scroll-cue">
+        <span>Begin the journey</span>
+        <div class="scroll-line"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1: CHAPTER INTRO -->
+  <div class="chapter" data-index="1" data-type="intro">
+    <div class="chapter-intro-content">
+      <p class="chapter-intro-label animate">// my story</p>
+      <h2 class="chapter-intro-title animate">My Journey</h2>
+      <p class="chapter-intro-sub animate" style="margin:1rem auto 0">From the football pitch to cloud-native architecture — here's how it unfolded.</p>
+    </div>
+    <p class="chapter-footer-hint">scroll to continue ↓</p>
+  </div>
+
+  <!-- 2: TSV Elstorf -->
+  <div class="chapter" data-index="2" data-type="personal">
+    <div class="step-bg-year">2012</div>
+    <div class="step-layout">
+      <div class="step-left">
+        <p class="step-chapter-num animate">Chapter 01</p>
+        <p class="step-years animate">2012–2024</p>
+        <span class="step-type-badge animate">Personal</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step-right">
+        <p class="step-role animate">Football Coach</p>
+        <p class="step-org animate">TSV Elstorf · Juniors</p>
+        <p class="step-desc animate">Nearly a decade on the sideline coaching junior football. More than a hobby — a masterclass in leadership, communication and bringing out the best in a team.</p>
+      </div>
+    </div>
+    <div class="step-detail">
+      <button class="detail-close" aria-label="Close">✕</button>
+      <div class="detail-project">
+        <p class="detail-project-year">2012 — 2024</p>
+        <p class="detail-project-title">Junior Football Coach</p>
+        <p class="detail-project-desc">Coached junior teams for nearly a decade — developing training plans, implementing game systems and organising training camps. A particular focus: integrating less gifted players into the team, fostering belonging and growth over pure talent.</p>
+      </div>
+      <div class="detail-project">
+        <p class="detail-project-year">Award</p>
+        <p class="detail-project-title">DFB Honorary Award — "Young Football Heroes" 🏆</p>
+        <p class="detail-project-desc">Recognised by the German Football Association (DFB) for outstanding voluntary commitment. One of the youngest recipients, honoured for years of dedication to youth development at TSV Elstorf.</p>
+      </div>
+    </div>
+    <p class="detail-click-hint"><span class="hint-dot"></span>Click to explore</p>
+  </div>
+
+  <!-- 3: Leuphana -->
+  <div class="chapter" data-index="3" data-type="edu">
+    <div class="step-bg-year">2018</div>
+    <div class="step-layout">
+      <div class="step-left">
+        <p class="step-chapter-num animate">Chapter 02</p>
+        <p class="step-years animate">2018–2022</p>
+        <span class="step-type-badge animate">Education</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step-right">
+        <p class="step-role animate">B.Sc. Wirtschaftsinformatik</p>
+        <p class="step-org animate">Leuphana Universität Lüneburg</p>
+        <p class="step-desc animate">Studied Business Informatics with a focus on software engineering, systems architecture, and digital transformation — bridging technical depth with business strategy.</p>
+      </div>
+    </div>
+    <div class="step-detail">
+      <button class="detail-close" aria-label="Close">✕</button>
+
+      <div class="detail-project">
+        <p class="detail-project-year">2022</p>
+        <p class="detail-project-title">Automated Sudoku Solver <span style="font-weight:400;color:var(--text-dim)">· Grade 1.3</span></p>
+        <p class="detail-project-desc">Four-week exam project. Reading a Sudoku image, evaluating handwritten digits, solving the puzzle and outputting the solved Sudoku as an image. (Advanced Software Development with Python – Focus: Machine Learning)</p>
+        <div class="detail-tags"><span class="detail-tag">Python</span><span class="detail-tag">TensorFlow</span><span class="detail-tag">OpenCV</span></div>
+      </div>
+
+      <div class="detail-project">
+        <p class="detail-project-year">2021</p>
+        <p class="detail-project-title">Ticket Machine <span style="font-weight:400;color:var(--text-dim)">· Grade 1.7</span></p>
+        <p class="detail-project-desc">Three-month exam project. Implementation of the business logic for ordering a public transport ticket. (Component-Oriented Software Architecture)</p>
+        <div class="detail-tags"><span class="detail-tag">Java</span><span class="detail-tag">Apache Felix</span></div>
+      </div>
+
+      <div class="detail-project">
+        <p class="detail-project-year">2020</p>
+        <p class="detail-project-title">Data Analysis <span style="font-weight:400;color:var(--text-dim)">· Grade 1.0</span></p>
+        <p class="detail-project-desc">Semester-long continuous exam with weekly deliverables. Reading, manipulating and evaluating datasets. (Introduction to Programming with Python for Data Analysis)</p>
+        <div class="detail-tags"><span class="detail-tag">Python</span><span class="detail-tag">Pandas</span><span class="detail-tag">NumPy</span></div>
+      </div>
+
+      <div class="detail-project">
+        <p class="detail-project-year">2020</p>
+        <p class="detail-project-title">Car Rental System <span style="font-weight:400;color:var(--text-dim)">· Grade 1.0</span></p>
+        <p class="detail-project-desc">Three-month exam project. Implementation of the business logic for a car rental application. (Software Architecture)</p>
+        <div class="detail-tags"><span class="detail-tag">Java</span></div>
+      </div>
+
+    </div>
+    <p class="detail-click-hint"><span class="hint-dot"></span>Click to explore</p>
+  </div>
+
+  <!-- 4: Hermes -->
+  <div class="chapter" data-index="4" data-type="work">
+    <div class="step-bg-year">2022</div>
+    <div class="step-layout">
+      <div class="step-left">
+        <p class="step-chapter-num animate">Chapter 03</p>
+        <p class="step-years animate">2022–2025</p>
+        <span class="step-type-badge animate">Work</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step-right">
+        <p class="step-role animate">Software Engineer</p>
+        <p class="step-org animate">Hermes Germany GmbH</p>
+        <p class="step-desc animate">Built and maintained backend services powering logistics operations at scale. Microservice architectures on GCP, Kotlin, Spring Boot and Kubernetes — learning what "production-grade" really means.</p>
+      </div>
+    </div>
+    <div class="step-detail">
+      <button class="detail-close" aria-label="Close">✕</button>
+
+      <div class="detail-project">
+        <p class="detail-project-year">2025</p>
+        <p class="detail-project-title">Remote Tour Release</p>
+        <p class="detail-project-desc">Analysis, documentation and cross-team coordination of changes. Full implementation of the new feature from backend to frontend.</p>
+        <div class="detail-tags"><span class="detail-tag">Kotlin</span><span class="detail-tag">TypeScript</span><span class="detail-tag">Spring Boot</span><span class="detail-tag">React</span><span class="detail-tag">MongoDB</span><span class="detail-tag">Apache Kafka</span></div>
+      </div>
+
+      <div class="detail-project">
+        <p class="detail-project-year">2024</p>
+        <p class="detail-project-title">Dissolving a Monolithic, State-Oriented Application</p>
+        <p class="detail-project-desc">Analysis and documentation of the existing application and its business domain. Design and development of Event-Driven Microservices to calculate the relationship between shipment and sorting destination, based on rules defined in dispatch.</p>
+        <div class="detail-tags"><span class="detail-tag">Kotlin</span><span class="detail-tag">Spring Boot</span><span class="detail-tag">WebFlux</span><span class="detail-tag">Coroutines</span><span class="detail-tag">Spring Kafka</span><span class="detail-tag">Apache Kafka</span><span class="detail-tag">MongoDB</span><span class="detail-tag">Kubernetes</span></div>
+      </div>
+
+      <div class="detail-project">
+        <p class="detail-project-year">2023</p>
+        <p class="detail-project-title">Restoring Maintainability of Cloud Infrastructure</p>
+        <p class="detail-project-desc">Acquisition of Cloud Engineering knowledge in the AWS context. Analysis of the existing infrastructure landscape, documentation, and subsequent maintenance and modernisation.</p>
+        <div class="detail-tags"><span class="detail-tag">AWS</span><span class="detail-tag">Terraform</span><span class="detail-tag">Kubernetes</span><span class="detail-tag">HELM</span></div>
+      </div>
+
+      <div class="detail-project">
+        <p class="detail-project-year">2023</p>
+        <p class="detail-project-title">Multiple Use of Delivery Areas in Dispatch</p>
+        <p class="detail-project-desc">Feature development enabling reuse of geographical delivery areas based on cell coding and street rules. References reduce dispatch maintenance overhead. Use case: bicycle delivery.</p>
+        <div class="detail-tags"><span class="detail-tag">Kotlin</span><span class="detail-tag">TypeScript</span><span class="detail-tag">React</span><span class="detail-tag">Spring Boot</span><span class="detail-tag">MongoDB</span><span class="detail-tag">Kubernetes</span></div>
+      </div>
+
+      <div class="detail-project">
+        <p class="detail-project-year">2023</p>
+        <p class="detail-project-title">Real-Time Processing of Shipment Status Data</p>
+        <p class="detail-project-desc">Prepared the business domain "Dispatch to Delivery Bases". Implemented filtering of all statuses and calculation of an abstracted shipment position within the logistics network based on status.</p>
+        <div class="detail-tags"><span class="detail-tag">Kotlin</span><span class="detail-tag">Spring Kafka</span><span class="detail-tag">Project Reactor</span><span class="detail-tag">Apache Kafka</span><span class="detail-tag">MongoDB</span></div>
+      </div>
+
+    </div>
+    <p class="detail-click-hint"><span class="hint-dot"></span>Click to explore</p>
+  </div>
+
+  <!-- 5: SupplyX -->
+  <div class="chapter" data-index="5" data-type="work">
+    <div class="step-bg-year">2025</div>
+    <div class="step-layout">
+      <div class="step-left">
+        <p class="step-chapter-num animate">Chapter 04</p>
+        <p class="step-years animate">2025 — Now</p>
+        <span class="step-type-badge animate">Work</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step-right">
+        <p class="step-role animate">Software Engineer</p>
+        <p class="step-org animate">SupplyX · Member of the Otto Group</p>
+        <p class="step-desc animate">Building the next generation of supply-chain software. Full-stack, cloud-native, fast-moving. The story is still being written.</p>
+      </div>
+    </div>
+    <div class="step-detail">
+      <button class="detail-close" aria-label="Close">✕</button>
+      <div class="detail-project">
+        <p class="detail-project-year">2025 — Present · Otto Group</p>
+        <p class="detail-project-title">Chapter in progress</p>
+        <p class="detail-project-desc">Building scalable supply-chain software from the ground up. Working across the full stack in a fast-moving environment with a focus on clean architecture and developer experience. More to come.</p>
+      </div>
+    </div>
+    <p class="detail-click-hint"><span class="hint-dot"></span>Click to explore</p>
+  </div>
+
+  <!-- 6: SKILLS -->
+  <div class="chapter" data-index="6" data-type="skills">
+    <div class="skills-content">
+      <p class="skills-label animate">// tech stack</p>
+      <h2 class="skills-title animate">Skills</h2>
+      <div class="skills-grid animate" id="skills-grid"></div>
+    </div>
+  </div>
+
+  <!-- 7: CONTACT -->
+  <div class="chapter" data-index="7" data-type="contact">
+    <div class="contact-content">
+      <p class="contact-label animate">// find me online</p>
+      <h2 class="contact-title animate">Connect</h2>
+      <p class="contact-sub animate">Always open to interesting problems and people. Let's talk.</p>
+      <div class="contact-links animate">
+
+        <a href="https://github.com/1stNox" target="_blank" class="contact-link github">
+          <svg class="contact-link-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.47.11-3.07 0 0 .97-.3 3.16 1.18a11 11 0 0 1 2.88-.39c.98 0 1.96.13 2.88.39 2.2-1.49 3.16-1.18 3.16-1.18.62 1.6.23 2.78.11 3.07.74.81 1.18 1.84 1.18 3.1 0 4.43-2.7 5.41-5.27 5.69.41.36.78 1.07.78 2.15v3.19c0 .31.21.67.8.56C20.2 21.4 23.5 17.1 23.5 12 23.5 5.65 18.35.5 12 .5z"/>
+          </svg>
+          <div class="contact-link-meta">
+            <strong>GitHub</strong>
+            <span>1stNox</span>
+          </div>
+        </a>
+        <a href="https://www.linkedin.com/in/finn-lasse-reichling-693742211/" target="_blank" class="contact-link linkedin">
+          <svg class="contact-link-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.59 0 4.26 2.36 4.26 5.43v6.31zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM3.56 20.45h3.56V9H3.56v11.45zM22.22 0H1.78C.8 0 0 .78 0 1.73v20.54C0 23.2.8 24 1.78 24h20.44C23.2 24 24 23.2 24 22.27V1.73C24 .78 23.2 0 22.22 0z"/>
+          </svg>
+          <div class="contact-link-meta">
+            <strong>LinkedIn</strong>
+            <span>finn-lasse-reichling</span>
+          </div>
+        </a>
+      </div>
+    </div>
+    <p style="position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;color:var(--text-dim);opacity:0.35;">© 2026 Finn-Lasse Reichling</p>
+  </div>
+
+</div><!-- /scroller -->
+
+<!-- TWEAKS PANEL -->
+<div id="tweaks-panel">
+  <h3>Tweaks</h3>
+  <div class="tweak-row">
+    <label>Star density</label>
+    <input type="range" id="tweak-stars" min="60" max="300" value="150" />
+  </div>
+  <div class="tweak-row">
+    <label>Particle speed</label>
+    <input type="range" id="tweak-speed" min="1" max="10" value="3" step="0.5" />
+  </div>
+  <div class="tweak-row">
+    <label>Accent palette</label>
+    <select id="tweak-hue">
+      <option value="255,300">Blue → Purple</option>
+      <option value="200,255">Cyan → Blue</option>
+      <option value="280,340">Purple → Pink</option>
+      <option value="160,210">Teal → Cyan</option>
+    </select>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script>
+// ── TWEAKS ──
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "starCount": 268,
+  "speed": 3,
+  "accentHue": "255,300"
+}/*EDITMODE-END*/;
+
+window.addEventListener('message', e => {
+  if (e.data?.type === '__activate_edit_mode')   document.getElementById('tweaks-panel').style.display = 'block';
+  if (e.data?.type === '__deactivate_edit_mode') document.getElementById('tweaks-panel').style.display = 'none';
+});
+window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+
+document.getElementById('tweak-stars').addEventListener('input', e => {
+  STAR_COUNT = parseInt(e.target.value);
+  initGalaxy();
+  window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { starCount: STAR_COUNT } }, '*');
+});
+document.getElementById('tweak-speed').addEventListener('input', e => {
+  SPEED = parseFloat(e.target.value);
+  window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { speed: SPEED } }, '*');
+});
+document.getElementById('tweak-hue').addEventListener('change', e => {
+  const [h1,h2] = e.target.value.split(',').map(Number);
+  H1 = h1; H2 = h2;
+  initGalaxy();
+  window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { accentHue: e.target.value } }, '*');
+});
+</script>
+
+<script>
+// ── GALAXY ──
+const canvas = document.getElementById('galaxy');
+const ctx = canvas.getContext('2d');
+let W, H, stars = [];
+let STAR_COUNT = TWEAK_DEFAULTS.starCount;
+document.getElementById('tweak-stars').value = STAR_COUNT;
+let SPEED = TWEAK_DEFAULTS.speed;
+let [H1, H2] = (TWEAK_DEFAULTS.accentHue || '255,300').split(',').map(Number);
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+
+function oklchToRgb(l, c, h) {
+  const rad = h * Math.PI / 180;
+  const a = c * Math.cos(rad), b = c * Math.sin(rad);
+  const L = l + 0.3963377774*a + 0.2158037573*b;
+  const M = l - 0.1055613458*a - 0.0638541728*b;
+  const S = l - 0.0894841775*a - 1.2914855480*b;
+  const ll=L*L*L, mm=M*M*M, ss=S*S*S;
+  let r =  4.0767416621*ll - 3.3077115913*mm + 0.2309699292*ss;
+  let g = -1.2684380046*ll + 2.6097574011*mm - 0.3413193965*ss;
+  let bl= -0.0041960863*ll - 0.7034186147*mm + 1.7076147010*ss;
+  const lin = x => x > 0.0031308 ? 1.055*Math.pow(Math.max(0,x),1/2.4)-0.055 : 12.92*x;
+  return [Math.round(Math.min(255,Math.max(0,lin(r)*255))), Math.round(Math.min(255,Math.max(0,lin(g)*255))), Math.round(Math.min(255,Math.max(0,lin(bl)*255)))];
+}
+
+function makeStar() {
+  const t = Math.random();
+  const hue = H1 + (H2 - H1) * t;
+  const bright = Math.random() < 0.18;
+  const rgb = oklchToRgb(0.65, bright ? 0.18 : 0.05, hue);
+  return {
+    x: Math.random() * W, y: Math.random() * H,
+    r: Math.random() * 1.7 + 0.2,
+    vx: (Math.random() - 0.5) * 0.12,
+    vy: (Math.random() - 0.5) * 0.12,
+    alpha: Math.random() * 0.55 + 0.2,
+    twinkle: Math.random() * Math.PI * 2,
+    twinkleSpeed: 0.008 + Math.random() * 0.018,
+    rgb,
+  };
+}
+
+function initGalaxy() {
+  stars = Array.from({ length: STAR_COUNT }, makeStar);
+}
+
+// Aries star positions (normalized 0–1 within bounding box)
+// Stars: 41 Ari → Hamal (α) → Sheratan (β) → Mesarthim (γ)
+const ARIES_STARS = [
+  { nx: 0.00, ny: 0.00, mag: 0.7, name: '41 Ari'    },
+  { nx: 0.42, ny: 0.55, mag: 1.0, name: 'Hamal α'   },
+  { nx: 0.72, ny: 0.72, mag: 0.8, name: 'Sheratan β' },
+  { nx: 1.00, ny: 0.80, mag: 0.6, name: 'Mesarthim γ'},
+];
+const ARIES_LINES = [[0,1],[1,2],[2,3]];
+
+(function draw() {
+  ctx.clearRect(0, 0, W, H);
+  const sp = SPEED * 0.04;
+  for (const s of stars) {
+    s.x = (s.x + s.vx * sp + W) % W;
+    s.y = (s.y + s.vy * sp + H) % H;
+    s.twinkle += s.twinkleSpeed;
+    const a = s.alpha * (0.65 + 0.35 * Math.sin(s.twinkle));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${s.rgb[0]},${s.rgb[1]},${s.rgb[2]},${a})`;
+    ctx.fill();
+  }
+  const maxD = 115;
+  for (let i = 0; i < stars.length; i++) {
+    for (let j = i + 1; j < stars.length; j++) {
+      const dx = stars[i].x - stars[j].x, dy = stars[i].y - stars[j].y;
+      const d = Math.sqrt(dx*dx + dy*dy);
+      if (d < maxD) {
+        ctx.beginPath();
+        ctx.moveTo(stars[i].x, stars[i].y);
+        ctx.lineTo(stars[j].x, stars[j].y);
+        ctx.strokeStyle = `rgba(180,140,240,${(1 - d/maxD) * 0.14})`;
+        ctx.lineWidth = 0.4;
+        ctx.stroke();
+      }
+    }
+  }
+  // ── ARIES CONSTELLATION ──
+  drawAries();
+
+  requestAnimationFrame(draw);
+})();
+
+function drawAries() {
+  if (!W || !H) return;
+  if (typeof drawAries.pulse === 'undefined') drawAries.pulse = 0;
+  drawAries.pulse += 0.012;
+  // Place constellation at ~70% from left, ~28% from top
+  const cx = W * 0.70;
+  const cy = H * 0.28;
+  const scale = Math.min(W, H) * 0.18; // responsive size
+
+  const glow = 0.55 + 0.2 * Math.sin(drawAries.pulse);
+
+  // Compute screen positions
+  const pts = ARIES_STARS.map(s => ({
+    x: cx + (s.nx - 0.5) * scale,
+    y: cy + (s.ny - 0.5) * scale,
+    mag: s.mag,
+  }));
+
+  // Draw lines
+  ctx.save();
+  ARIES_LINES.forEach(([a, b]) => {
+    const grad = ctx.createLinearGradient(pts[a].x, pts[a].y, pts[b].x, pts[b].y);
+    grad.addColorStop(0, `rgba(210,185,255,${0.28 * glow})`);
+    grad.addColorStop(1, `rgba(180,155,240,${0.18 * glow})`);
+    ctx.beginPath();
+    ctx.moveTo(pts[a].x, pts[a].y);
+    ctx.lineTo(pts[b].x, pts[b].y);
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+  });
+
+  // Draw stars with glow
+  pts.forEach((p, i) => {
+    const r = 2.5 + ARIES_STARS[i].mag * 2.5;
+    const alpha = (0.75 + 0.2 * Math.sin(drawAries.pulse + i)) * glow;
+
+    // Outer glow
+    const glowR = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r * 4);
+    glowR.addColorStop(0, `rgba(220,200,255,${alpha * 0.4})`);
+    glowR.addColorStop(1, `rgba(180,140,255,0)`);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, r * 4, 0, Math.PI * 2);
+    ctx.fillStyle = glowR;
+    ctx.fill();
+
+    // Star core
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(240,225,255,${alpha})`;
+    ctx.fill();
+  });
+
+  ctx.restore();
+}
+
+window.addEventListener('resize', () => { resize(); initGalaxy(); });
+resize();
+initGalaxy();
+</script>
+
+<script>
+// ── SKILLS ──
+const skillData = [
+  { name: 'Kotlin',               featured: true },
+  { name: 'TypeScript',           featured: true },
+  { name: 'Python',               featured: true },
+  { name: 'React',                featured: true },
+  { name: 'Spring Boot',          featured: false },
+  { name: 'GCP',                  featured: false },
+  { name: 'Kubernetes',           featured: false },
+  { name: 'PostgreSQL',           featured: false },
+  { name: 'MongoDB',              featured: false },
+  { name: 'Software Architecture',featured: false },
+  { name: 'Communication',        featured: false },
+];
+
+const grid = document.getElementById('skills-grid');
+skillData.forEach(s => {
+  const el = document.createElement('div');
+  el.className = 'skill-chip' + (s.featured ? ' featured' : '');
+  el.textContent = s.name;
+  grid.appendChild(el);
+});
+
+// ── PROGRESS DOTS ──
+const chapters = document.querySelectorAll('.chapter');
+const prog = document.getElementById('progress');
+const DOT_COLORS = {
+  hero: 'rgba(255,255,255,0.3)',
+  intro: 'rgba(255,255,255,0.3)',
+  personal: 'oklch(0.82 0.12 290)',
+  edu: 'oklch(0.70 0.15 290)',
+  work: 'oklch(0.76 0.18 290)',
+  skills: 'oklch(0.76 0.18 290)',
+  contact: 'oklch(0.76 0.18 290)',
+};
+
+chapters.forEach((ch, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'prog-dot';
+  dot.dataset.index = i;
+  dot.style.setProperty('--dot-color', DOT_COLORS[ch.dataset.type] || 'white');
+  dot.addEventListener('click', () => {
+    document.getElementById('scroller').scrollTo({ top: i * window.innerHeight, behavior: 'smooth' });
+  });
+  prog.appendChild(dot);
+});
+
+// ── SCROLL OBSERVER ──
+const scroller = document.getElementById('scroller');
+const dots = document.querySelectorAll('.prog-dot');
+
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = parseInt(entry.target.dataset.index);
+      entry.target.classList.add('entered');
+      dots.forEach(d => d.classList.remove('active'));
+      if (dots[idx]) dots[idx].classList.add('active');
+    }
+  });
+}, {
+  root: scroller,
+  threshold: 0.55,
+});
+
+chapters.forEach(ch => io.observe(ch));
+
+// Trigger hero immediately
+setTimeout(() => {
+  chapters[0].classList.add('entered');
+  dots[0] && dots[0].classList.add('active');
+}, 100);
+
+// ── AUTO-SCROLL ──
+const AUTO_DELAY = 6800; // ms per chapter
+const TOTAL = chapters.length;
+let currentIndex = 0;
+let autoTimer = null;
+let autoBar = null;
+let userPaused = false;
+let pauseTimeout = null;
+
+// Create auto-progress bar
+const barContainer = document.createElement('div');
+barContainer.style.cssText = 'position:fixed;bottom:0;left:0;right:0;height:2px;z-index:200;pointer-events:none;';
+autoBar = document.createElement('div');
+autoBar.style.cssText = 'height:100%;width:0%;background:var(--c-work);opacity:0.6;transition:none;';
+barContainer.appendChild(autoBar);
+document.body.appendChild(barContainer);
+
+function startAutoBar() {
+  autoBar.style.transition = 'none';
+  autoBar.style.width = '0%';
+  // force reflow
+  autoBar.getBoundingClientRect();
+  autoBar.style.transition = `width ${AUTO_DELAY}ms linear`;
+  autoBar.style.width = '100%';
+}
+
+function stopAutoBar() {
+  autoBar.style.transition = 'none';
+  autoBar.style.width = '0%';
+}
+
+function scheduleNext() {
+  clearTimeout(autoTimer);
+  if (userPaused) return;
+  if (currentIndex >= TOTAL - 1) return;
+  startAutoBar();
+  autoTimer = setTimeout(() => {
+    if (userPaused) return;
+    currentIndex = Math.min(currentIndex + 1, TOTAL - 1);
+    scroller.scrollTo({ top: currentIndex * window.innerHeight, behavior: 'smooth' });
+    scheduleNext();
+  }, AUTO_DELAY);
+}
+
+// Track current index from observer
+const origIO = io;
+const ioAuto = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      currentIndex = parseInt(entry.target.dataset.index);
+    }
+  });
+}, { root: scroller, threshold: 0.55 });
+chapters.forEach(ch => ioAuto.observe(ch));
+
+// Pause on user interaction, resume after 6s
+function onUserInteract() {
+  userPaused = true;
+  clearTimeout(autoTimer);
+  stopAutoBar();
+  clearTimeout(pauseTimeout);
+  pauseTimeout = setTimeout(() => {
+    userPaused = false;
+    scheduleNext();
+  }, 6000);
+}
+
+scroller.addEventListener('wheel', onUserInteract, { passive: true });
+scroller.addEventListener('touchstart', onUserInteract, { passive: true });
+scroller.addEventListener('keydown', onUserInteract);
+document.querySelectorAll('.prog-dot').forEach(d => {
+  d.addEventListener('click', onUserInteract);
+});
+
+// Start after hero entrance
+setTimeout(scheduleNext, 1800);
+
+// ── STEP CLICK TO EXPAND ──
+document.querySelectorAll('.chapter[data-type="work"], .chapter[data-type="edu"], .chapter[data-type="personal"]').forEach(ch => {
+  const layout = ch.querySelector('.step-layout');
+  const detail = ch.querySelector('.step-detail');
+  const closeBtn = ch.querySelector('.detail-close');
+
+  layout.addEventListener('click', () => {
+    const wasExpanded = ch.classList.contains('expanded');
+    document.querySelectorAll('.chapter.expanded').forEach(c => c.classList.remove('expanded'));
+    if (!wasExpanded) {
+      ch.classList.add('expanded');
+      onUserInteract();
+    }
+  });
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      ch.classList.remove('expanded');
+    });
+  }
+
+  // Prevent detail panel scroll from triggering chapter scroll
+  if (detail) {
+    detail.addEventListener('wheel', e => e.stopPropagation(), { passive: true });
+    detail.addEventListener('touchmove', e => e.stopPropagation(), { passive: true });
+  }
+});
+</script>
+
+</body>
+</html>
