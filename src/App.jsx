@@ -28,11 +28,97 @@ const TWEAK_DEFAULTS = {
   accentHue: '255,300',
 }
 
+const TSV_PROJECTS = [
+  {
+    year: '2012 — 2024',
+    title: 'Junior Football Coach',
+    desc: 'Coached junior teams for nearly a decade — developing training plans, implementing game systems and organising training camps. A particular focus: integrating less gifted players into the team, fostering belonging and growth over pure talent.',
+  },
+  {
+    year: 'Award',
+    title: 'DFB Honorary Award — "Young Football Heroes" 🏆',
+    desc: 'Recognised by the German Football Association (DFB) for outstanding voluntary commitment. One of the youngest recipients, honoured for years of dedication to youth development at TSV Elstorf.',
+  },
+]
+
+const LEUPHANA_PROJECTS = [
+  {
+    year: '2022',
+    title: 'Automated Sudoku Solver',
+    grade: 'Grade 1.3',
+    desc: 'Four-week exam project. Reading a Sudoku image, evaluating handwritten digits, solving the puzzle and outputting the solved Sudoku as an image. (Advanced Software Development with Python – Focus: Machine Learning)',
+    tags: ['Python', 'TensorFlow', 'OpenCV'],
+  },
+  {
+    year: '2021',
+    title: 'Ticket Machine',
+    grade: 'Grade 1.7',
+    desc: 'Three-month exam project. Implementation of the business logic for ordering a public transport ticket. (Component-Oriented Software Architecture)',
+    tags: ['Java', 'Apache Felix'],
+  },
+  {
+    year: '2020',
+    title: 'Data Analysis',
+    grade: 'Grade 1.0',
+    desc: 'Semester-long continuous exam with weekly deliverables. Reading, manipulating and evaluating datasets. (Introduction to Programming with Python for Data Analysis)',
+    tags: ['Python', 'Pandas', 'NumPy'],
+  },
+  {
+    year: '2020',
+    title: 'Car Rental System',
+    grade: 'Grade 1.0',
+    desc: 'Three-month exam project. Implementation of the business logic for a car rental application. (Software Architecture)',
+    tags: ['Java'],
+  },
+]
+
+const HERMES_PROJECTS = [
+  {
+    year: '2025',
+    title: 'Remote Tour Release',
+    desc: 'Analysis, documentation and cross-team coordination of changes. Full implementation of the new feature from backend to frontend.',
+    tags: ['Kotlin', 'TypeScript', 'Spring Boot', 'React', 'MongoDB', 'Apache Kafka'],
+  },
+  {
+    year: '2024',
+    title: 'Dissolving a Monolithic, State-Oriented Application',
+    desc: 'Analysis and documentation of the existing application and its business domain. Design and development of Event-Driven Microservices to calculate the relationship between shipment and sorting destination, based on rules defined in dispatch.',
+    tags: ['Kotlin', 'Spring Boot', 'WebFlux', 'Coroutines', 'Spring Kafka', 'Apache Kafka', 'MongoDB', 'Kubernetes'],
+  },
+  {
+    year: '2023',
+    title: 'Restoring Maintainability of Cloud Infrastructure',
+    desc: 'Acquisition of Cloud Engineering knowledge in the AWS context. Analysis of the existing infrastructure landscape, documentation, and subsequent maintenance and modernisation.',
+    tags: ['AWS', 'Terraform', 'Kubernetes', 'HELM'],
+  },
+  {
+    year: '2023',
+    title: 'Multiple Use of Delivery Areas in Dispatch',
+    desc: 'Feature development enabling reuse of geographical delivery areas based on cell coding and street rules. References reduce dispatch maintenance overhead. Use case: bicycle delivery.',
+    tags: ['Kotlin', 'TypeScript', 'React', 'Spring Boot', 'MongoDB', 'Kubernetes'],
+  },
+  {
+    year: '2023',
+    title: 'Real-Time Processing of Shipment Status Data',
+    desc: 'Prepared the business domain "Dispatch to Delivery Bases". Implemented filtering of all statuses and calculation of an abstracted shipment position within the logistics network based on status.',
+    tags: ['Kotlin', 'Spring Kafka', 'Project Reactor', 'Apache Kafka', 'MongoDB'],
+  },
+]
+
+const SUPPLYX_PROJECTS = [
+  {
+    year: '2025 — Present · Otto Group',
+    title: 'Chapter in progress',
+    desc: 'Building scalable supply-chain software from the ground up. Working across the full stack in a fast-moving environment with a focus on clean architecture and developer experience. More to come.',
+  },
+]
+
 export default function App() {
   const [tweaks, setTweaks] = useState(TWEAK_DEFAULTS)
   const [tweaksPanelVisible, setTweaksPanelVisible] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
   const [enteredIndices, setEnteredIndices] = useState(new Set())
+  const [expandedIndex, setExpandedIndex] = useState(null)
 
   const scrollerRef = useRef(null)
   const autoTimerRef = useRef(null)
@@ -93,6 +179,15 @@ export default function App() {
     scrollerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
+  const handleExpand = useCallback((index) => {
+    setExpandedIndex(index)
+    onUserInteract()
+  }, [onUserInteract])
+
+  const handleCollapse = useCallback(() => {
+    setExpandedIndex(null)
+  }, [])
+
   useEffect(() => {
     const scroller = scrollerRef.current
     if (!scroller) return
@@ -109,6 +204,7 @@ export default function App() {
           })
           setActiveIndex(idx)
           currentIndexRef.current = idx
+          setExpandedIndex(prev => (prev !== null && prev !== idx ? null : prev))
         }
       })
     }, { root: scroller, threshold: 0.55 })
@@ -169,18 +265,25 @@ export default function App() {
           index={2}
           type="personal"
           entered={enteredIndices.has(2)}
-          bgYear="2015"
+          expanded={expandedIndex === 2}
+          onExpand={() => handleExpand(2)}
+          onCollapse={handleCollapse}
+          bgYear="2012"
           chapterNum="Chapter 01"
-          years="2015–2024"
+          years="2012–2024"
           badge="Personal"
           role="Football Coach"
           org="TSV Elstorf · Juniors"
           desc="Nearly a decade on the sideline coaching junior football. More than a hobby — a masterclass in leadership, communication and bringing out the best in a team."
+          projects={TSV_PROJECTS}
         />
         <TimelineChapter
           index={3}
           type="edu"
           entered={enteredIndices.has(3)}
+          expanded={expandedIndex === 3}
+          onExpand={() => handleExpand(3)}
+          onCollapse={handleCollapse}
           bgYear="2018"
           chapterNum="Chapter 02"
           years="2018–2022"
@@ -188,11 +291,15 @@ export default function App() {
           role="B.Sc. Wirtschaftsinformatik"
           org="Leuphana Universität Lüneburg"
           desc="Studied Business Informatics with a focus on software engineering, systems architecture, and digital transformation — bridging technical depth with business strategy."
+          projects={LEUPHANA_PROJECTS}
         />
         <TimelineChapter
           index={4}
           type="work"
           entered={enteredIndices.has(4)}
+          expanded={expandedIndex === 4}
+          onExpand={() => handleExpand(4)}
+          onCollapse={handleCollapse}
           bgYear="2022"
           chapterNum="Chapter 03"
           years="2022–2025"
@@ -200,18 +307,23 @@ export default function App() {
           role="Software Engineer"
           org="Hermes Germany GmbH"
           desc={`Built and maintained backend services powering logistics operations at scale. Microservice architectures on GCP, Kotlin, Spring Boot and Kubernetes — learning what "production-grade" really means.`}
+          projects={HERMES_PROJECTS}
         />
         <TimelineChapter
           index={5}
           type="work"
           entered={enteredIndices.has(5)}
+          expanded={expandedIndex === 5}
+          onExpand={() => handleExpand(5)}
+          onCollapse={handleCollapse}
           bgYear="2025"
           chapterNum="Chapter 04"
           years="2025 — Now"
           badge="Work"
           role="Software Engineer"
-          org="SupplyX (Member of the Otto Group)"
+          org="SupplyX · Member of the Otto Group"
           desc="Building the next generation of supply-chain software. Full-stack, cloud-native, fast-moving. The story is still being written."
+          projects={SUPPLYX_PROJECTS}
         />
         <SkillsChapter entered={enteredIndices.has(6)} />
         <ContactChapter entered={enteredIndices.has(7)} />
