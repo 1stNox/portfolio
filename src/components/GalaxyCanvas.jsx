@@ -1,5 +1,13 @@
 import { useEffect, useRef } from 'react'
 
+const ARIES_STARS = [
+  { nx: 0.00, ny: 0.00, mag: 0.7, name: '41 Ari'     },
+  { nx: 0.42, ny: 0.55, mag: 1.0, name: 'Hamal α'    },
+  { nx: 0.72, ny: 0.72, mag: 0.8, name: 'Sheratan β' },
+  { nx: 1.00, ny: 0.80, mag: 0.6, name: 'Mesarthim γ'},
+]
+const ARIES_LINES = [[0, 1], [1, 2], [2, 3]]
+
 export default function GalaxyCanvas({ tweaks }) {
   const canvasRef = useRef(null)
   const starsRef = useRef([])
@@ -62,6 +70,58 @@ export default function GalaxyCanvas({ tweaks }) {
     }
     initGalaxyRef.current = initGalaxy
 
+    let ariesPulse = 0
+
+    function drawAries() {
+      const W = wRef.current, H = hRef.current
+      if (!W || !H) return
+      ariesPulse += 0.012
+      const cx = W * 0.70
+      const cy = H * 0.28
+      const scale = Math.min(W, H) * 0.18
+
+      const glow = 0.55 + 0.2 * Math.sin(ariesPulse)
+
+      const pts = ARIES_STARS.map(s => ({
+        x: cx + (s.nx - 0.5) * scale,
+        y: cy + (s.ny - 0.5) * scale,
+        mag: s.mag,
+      }))
+
+      ctx.save()
+      ARIES_LINES.forEach(([a, b]) => {
+        const grad = ctx.createLinearGradient(pts[a].x, pts[a].y, pts[b].x, pts[b].y)
+        grad.addColorStop(0, `rgba(210,185,255,${0.28 * glow})`)
+        grad.addColorStop(1, `rgba(180,155,240,${0.18 * glow})`)
+        ctx.beginPath()
+        ctx.moveTo(pts[a].x, pts[a].y)
+        ctx.lineTo(pts[b].x, pts[b].y)
+        ctx.strokeStyle = grad
+        ctx.lineWidth = 1.2
+        ctx.stroke()
+      })
+
+      pts.forEach((p, i) => {
+        const r = 2.5 + ARIES_STARS[i].mag * 2.5
+        const alpha = (0.75 + 0.2 * Math.sin(ariesPulse + i)) * glow
+
+        const glowR = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r * 4)
+        glowR.addColorStop(0, `rgba(220,200,255,${alpha * 0.4})`)
+        glowR.addColorStop(1, `rgba(180,140,255,0)`)
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, r * 4, 0, Math.PI * 2)
+        ctx.fillStyle = glowR
+        ctx.fill()
+
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, r, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(240,225,255,${alpha})`
+        ctx.fill()
+      })
+
+      ctx.restore()
+    }
+
     function draw() {
       const W = wRef.current, H = hRef.current
       const { speed } = tweaksRef.current
@@ -93,6 +153,7 @@ export default function GalaxyCanvas({ tweaks }) {
           }
         }
       }
+      drawAries()
       animFrameRef.current = requestAnimationFrame(draw)
     }
 
