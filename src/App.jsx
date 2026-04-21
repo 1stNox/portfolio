@@ -210,7 +210,7 @@ export default function App() {
           years="2025 — Now"
           badge="Work"
           role="Software Engineer"
-          org="SupplyX"
+          org="SupplyX (Member of the Otto Group)"
           desc="Building the next generation of supply-chain software. Full-stack, cloud-native, fast-moving. The story is still being written."
         />
         <SkillsChapter entered={enteredIndices.has(6)} />
