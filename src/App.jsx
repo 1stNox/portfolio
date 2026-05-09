@@ -16,8 +16,9 @@ const CHAPTERS = [
   { index: 3, type: 'edu'      },
   { index: 4, type: 'work'     },
   { index: 5, type: 'work'     },
-  { index: 6, type: 'skills'   },
-  { index: 7, type: 'contact'  },
+  { index: 6, type: 'personal' },
+  { index: 7, type: 'skills'   },
+  { index: 8, type: 'contact'  },
 ]
 
 const AUTO_DELAY = 6800
@@ -110,6 +111,15 @@ const SUPPLYX_PROJECTS = [
     year: '2025 — Present · Otto Group',
     title: 'Chapter in progress',
     desc: 'Building scalable supply-chain software from the ground up. Working across the full stack in a fast-moving environment with a focus on clean architecture and developer experience. More to come.',
+  },
+]
+
+const NO_MORE_BS_PROJECTS = [
+  {
+    year: '2026',
+    title: 'no-more-bs',
+    desc: 'A CLI that distributes shared behavioral instructions and reusable skills across multiple agentic coding tools — Claude Code, Codex and OpenCode — through a single interactive command. Idempotent re-runs with hash-based change detection; per-unit overwrite / skip / diff / backup prompts; auto-detects bunx, pnpm dlx and npx. My first open-source project, published to npm under the MIT license.',
+    tags: ['TypeScript', 'Node.js', 'CLI', 'npm', 'MIT'],
   },
 ]
 
@@ -325,8 +335,24 @@ export default function App() {
           desc="Building the next generation of supply-chain software. Full-stack, cloud-native, fast-moving. The story is still being written."
           projects={SUPPLYX_PROJECTS}
         />
-        <SkillsChapter entered={enteredIndices.has(6)} />
-        <ContactChapter entered={enteredIndices.has(7)} />
+        <TimelineChapter
+          index={6}
+          type="personal"
+          entered={enteredIndices.has(6)}
+          expanded={expandedIndex === 6}
+          onExpand={() => handleExpand(6)}
+          onCollapse={handleCollapse}
+          bgYear="2026"
+          chapterNum="Chapter 05"
+          years="2026"
+          badge="Open Source"
+          role="Author & Maintainer"
+          org="no-more-bs · npm"
+          desc="Shipping my first open-source project — a CLI that consolidates shared agentic-coding setup across Claude Code, Codex and OpenCode into one command."
+          projects={NO_MORE_BS_PROJECTS}
+        />
+        <SkillsChapter entered={enteredIndices.has(7)} />
+        <ContactChapter entered={enteredIndices.has(8)} />
       </div>
       <TweaksPanel
         visible={tweaksPanelVisible}
